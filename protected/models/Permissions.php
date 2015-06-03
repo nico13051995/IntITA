@@ -188,23 +188,20 @@ class Permissions extends CActiveRecord
  * @param array $rights array of rights for user (allowed read, edit, create, delete)
  * */
     public function setPermission($idUser, $idResource, $rights){
-        // find record in permission table by user id and resource id
-        $record = $this->findByAttributes(array('id_user' => $idUser,
-            'id_resource' => $idResource));
-        // if record not found, create new record
-        if (!$record){
-            $record = new Permissions();
-            $record->id_user = $idUser;
-            $record->id_resource = $idResource;
-        }
-        // set right in bit mask with logic operation OR and bit's flag
-        $record->rights |= $this->setFlags($rights);
 
-         //write record in db
-        if($record->save()) {
-            return true;
-        } else {
-            return false;
+        if(Permissions::model()->exists('id_user=:user and id_resource=:resource', array(':user' => $idUser, ':resource' => $idResource)))
+        {
+            Permissions::model()->updateByPk(array('id_user'=>$idUser,'id_resource'=> $idResource), array('rights' => Permissions::setFlags($rights)));
+        }
+        else
+        {
+
+            Yii::app()->db->createCommand()->insert('permissions', array(
+                'id_user' => $idUser,
+                'id_resource' => $idResource,
+                'rights' => Permissions::setFlags($rights),
+            ));
+           // var_dump($idUser);die();
         }
     }
 }

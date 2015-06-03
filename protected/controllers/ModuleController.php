@@ -187,24 +187,23 @@ class ModuleController extends Controller
 	}
 
     public  function actionSaveLesson(){
-        $teacher = Yii::app()->user->getId();
+        $user = Yii::app()->user->getId();
+        $teacher = Teacher::model()->find('user_id=:user', array(':user' => $user))->teacher_id;
 
         $newOrder = Lecture::model()->addNewLesson(
             $_POST['idModule'],
             $_POST['newLectureName'],
             $_POST['lang'],
-            Teacher::model()->find('user_id=:user', array(':user' => $teacher))->teacher_id
+            $teacher
         );
 
         Module::model()->updateByPk($_POST['idModule'], array('lesson_count'=>$_POST['order']));
         Yii::app()->user->setFlash('newLecture','Нова лекція №'.$newOrder.$_POST['newLectureName'] .'додана до цього модуля');
         // if AJAX request, we should not redirect the browser
         $permission = new Permissions();
-        var_dump($permission->setPermission(
-            $teacher,
+        $permission->setPermission($teacher,
             Lecture::model()->findByAttributes(array('idModule' => $_POST['idModule'], 'order' => $newOrder))->id,
-            array('read', 'edit', 'create', 'delete'))
-        );
+            array('read', 'edit', 'create', 'delete'));
         if(!isset($_GET['ajax']))
             $this->redirect(Yii::app()->request->urlReferrer);
 
