@@ -72,6 +72,7 @@ class PermissionsController extends Controller
         }
 
         if(isset($_POST['lecture'])) {
+            //if(Lecture::model()->exists('id=:id and '))
             $user = Yii::app()->db->createCommand()->insert('permissions', array(
                 'id_user' => $_POST['user'],
                 'id_resource' => $_POST['lecture'],
@@ -86,9 +87,7 @@ class PermissionsController extends Controller
         if (Yii::app()->user->getId() != 49) {
             throw new CHttpException(403, 'У вас немає права редагування цього документа.');
         }
-
         $result = Yii::app()->db->createCommand()->delete('permissions', 'id_user=:id_user AND id_resource=:id_resource', array(':id_user'=>$id, ':id_resource'=>$resource));
-
         $this->actionIndex();
     }
 
