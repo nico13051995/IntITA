@@ -8,7 +8,7 @@
 ?>
 <?php if(AccessHelper::canAddResponse()){ ?>
 <div class="lessonTask">
-    <img class="lessonBut" src="<?php echo StaticFilesHelper::createPath('image', 'teachers', 'lessButton.png');?>">
+    <img class="lessonBut" src="<?php echo Yii::app()->request->baseUrl; ?>/css/images/lessButton.png">
     <div class="lessonButName" unselectable="on"><?php echo Yii::t('teacher', '0187'); ?></div>
     <div class="lessonLine"></div>
     <div class="responseBG">
@@ -64,7 +64,7 @@
 <?php } ?>
 <script type="text/javascript">
 
-    $.fn.raty.defaults.path = "<?php echo Yii::app()->request->baseUrl; ?>/images/rating/";
+    $.fn.raty.defaults.path = "<?php echo Yii::app()->request->baseUrl; ?>/scripts/rating/img/";
 
     $('#material').raty({
         click: function(score) {

@@ -12,7 +12,7 @@ if (AccessHelper::isAdmin()) $post->setScenario('canedit');
         <table>
             <tr>
                 <td>
-                    <img class="moduleImg" src="<?php echo StaticFilesHelper::createPath('image', 'module', $post->module_img);?>" />
+                    <img class="moduleImg" src="<?php echo StaticFilesHelper::createPath('image', 'course', $post->module_img); ?>" />
                 </td>
                 <td style="padding-left: 15px;">
                     <span id="titleModule"><?php echo Yii::t('module', '0211'); ?></span>

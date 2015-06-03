@@ -21,6 +21,7 @@
 class Course extends CActiveRecord
 {
 	const MAX_LEVEL = 5;
+    public $logo=array(),$oldLogo;
     /**
 	 * @return string the associated database table name
 	 */
@@ -42,7 +43,8 @@ class Course extends CActiveRecord
 			array('alias, course_price', 'length', 'max'=>10),
 			array('language', 'length', 'max'=>6),
 			array('course_name', 'length', 'max'=>45),
-			array('course_img', 'length', 'max'=>255),
+			array('course_img', 'file','types'=>'jpg, gif, png'),
+            //array('start','text'),
 			array('for_whom, what_you_learn, what_you_get', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -191,12 +193,35 @@ class Course extends CActiveRecord
 		return $this->findByPk($id)->alias;
 	}
 
-/*	public function exists($alias){
+	public function exists($alias){
 		return $this->findCourseIDByAlias($alias);
-	}*/
+	}
 
 	public function findCourseIDByAlias($alias){
 		return $this->find('alias=:alias', array(':alias' == $alias))->course_ID;
 	}
+
+    protected function beforeSave()
+    {
+        if ($this->scenario=="update")
+        {
+            $src=Yii::getPathOfAlias('webroot')."/images/course/".$this->oldLogo;
+            if (is_file($src))
+                unlink($src);
+        }
+        if ($this->scenario=="insert" || $this->scenario=="update")
+        {
+            if(!copy($this->logo['tmp_name']['course_img'],Yii::getPathOfAlias('webroot')."/images/course/".$this->logo['name']['course_img']))
+                throw new CHttpException(500);
+        }
+        return true;
+    }
+    protected function beforeDelete()
+    {
+        $src=Yii::getPathOfAlias('webroot')."/images/course/".$this->course_img;
+        if (is_file($src))
+            unlink($src);
+        return true;
+    }
 
 }
